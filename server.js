@@ -5,11 +5,11 @@ const config = require("./config");
 const mqttUri = `mqtt://${config.mqtt.hostname}:${config.mqtt.port}`;
 const mqttClient = mqtt.connect(mqttUri);
 
-const mongoUri = "mongodb://127.0.0.1:27017";
+const mongoUri = 'mongodb://127.0.0.1:27017';
 const date_time = new Date();
 const client = new MongoClient(mongoUri);
-const database = client.db(config.mongodb.database);
-const messageCollection = database.collection("message");
+const database = client.db('elect_dig');
+const messageCollection = database.collection('message');
 
 mqttClient.on("connect", () => {
     mqttClient.subscribe("#", (err) => {
