@@ -1,7 +1,6 @@
 
 function splitPath(url, part) {
-    const urlObj = new URL(url)
-    const parts = urlObj.pathname.split("/")
+    const parts = url.split("/")
     return parts[part];
 
 }
