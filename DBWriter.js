@@ -1,4 +1,3 @@
-import {splitPath} from "./PathManager";
 
 const {MongoClient} = require("mongodb");
 const mongoUri = 'mongodb://127.0.0.1:27017';
@@ -6,7 +5,7 @@ const client = new MongoClient(mongoUri);
 const database = client.db('elect_dig');
 const messageCollection = database.collection('vending_machine');
 
-export async function write_database(topic, message){
+async function write_database(topic, message){
     const product = splitPath(topic, -1)
     await messageCollection.findOneAndUpdate(
         {title: product},
@@ -15,7 +14,7 @@ export async function write_database(topic, message){
     console.log("Compra exitosa")
 }
 
-export async function add_product(topic, message) {
+async function add_product(topic, message) {
     const product = message.toString().split(",");
     await messageCollection.insertOne(
         {

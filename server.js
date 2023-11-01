@@ -2,7 +2,6 @@ const mqtt = require("mqtt");
 const { MongoClient } = require("mongodb");
 const config = require("./config");
 const {splitPath} = require("./PathManager");
-const {write_database, add_product} = require("./DBWriter");
 
 const mqttUri = `mqtt://${config.mqtt.hostname}:${config.mqtt.port}`;
 const mqttClient = mqtt.connect(mqttUri);
