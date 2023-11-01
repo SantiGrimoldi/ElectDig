@@ -12,7 +12,7 @@ const database = client.db('elect_dig');
 const messageCollection = database.collection('message');
 
 mqttClient.on("connect", () => {
-    mqttClient.subscribe("#", (err) => {
+    mqttClient.subscribe("AustralFI/inel15/#", (err) => {
         if (!err) {
             console.log("MQTT Client connected");
         }
