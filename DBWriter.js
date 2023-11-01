@@ -8,6 +8,8 @@ const messageCollection = database.collection('vending_machine');
 
 async function write_database(topic, message){
     const product = splitPath(topic, -1)
+    console.log(product)
+    console.log(message.toString())
     await messageCollection.findOneAndUpdate(
         {title: product},
         {$inc: {qty: parseInt(message.toString())}}
