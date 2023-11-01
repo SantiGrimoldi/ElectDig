@@ -5,3 +5,7 @@ function splitPath(url, part) {
     return parts[part];
 
 }
+
+module.exports = {
+    splitPath
+}

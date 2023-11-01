@@ -24,3 +24,8 @@ async function add_product(topic, message) {
     )
     console.log("Agregado con exito!")
 }
+
+module.exports = {
+    add_product,
+    write_database
+}
