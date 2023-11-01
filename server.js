@@ -31,7 +31,7 @@ mqttClient.on("message", async (topic, message) => {
             };
 
             const result = await messageCollection.insertOne(doc);
-
+            console.log(topic);
             console.log(`MongoDB Document Inserted with _id: ${result.insertedId}`);
         }
     } catch (err) {
