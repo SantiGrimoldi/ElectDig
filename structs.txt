@@ -1,0 +1,9 @@
+struct document {
+    title : String (titulo),
+    qty : Int (cantidad)
+}
+
+paths ->  AustralFi/inel15
+    /get
+    /add
+    /buy
