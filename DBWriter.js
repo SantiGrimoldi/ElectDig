@@ -1,5 +1,6 @@
 
 const {MongoClient} = require("mongodb");
+const {splitPath} = require("./PathManager");
 const mongoUri = 'mongodb://127.0.0.1:27017';
 const client = new MongoClient(mongoUri);
 const database = client.db('elect_dig');

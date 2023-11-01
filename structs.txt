@@ -7,3 +7,12 @@ paths ->  AustralFi/inel15
     /get
     /add
     /buy
+
+
+
+test> use elect_dig
+switched to db elect_dig
+elect_dig> show collections
+message
+vending_machine
+elect_dig> db.vending_machine.find()
