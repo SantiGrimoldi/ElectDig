@@ -22,7 +22,7 @@ mqttClient.on("connect", () => {
 mqttClient.on("message", async (topic, message) => {
     try {
         if (topic === "AustralFI/inel15/get") {
-            await messageCollection.find().sort({fecha : -1}).limit(1).then(e => console.log(e));
+            console.log(await messageCollection.find().sort({fecha : -1}).limit(1));
         }
         else{
             const doc = {
