@@ -10,7 +10,7 @@ async function write_database(topic, message){
     const product = splitPath(topic, -1)
     await messageCollection.findOneAndUpdate(
         {title: product},
-        {$inc: {quantity: parseInt(message.toString())}}
+        {$inc: {qty: parseInt(message.toString())}}
     )
     console.log("Compra exitosa")
 }
