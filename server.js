@@ -21,7 +21,7 @@ mqttClient.on("connect", () => {
 
 mqttClient.on("message", async (topic, message) => {
     try {
-        if (topic === "get") {
+        if (topic === "AustralFI/inel15/get") {
             console.log(messageCollection.findOne());
         }
         else{
