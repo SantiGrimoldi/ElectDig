@@ -22,8 +22,7 @@ mqttClient.on("connect", () => {
 mqttClient.on("message", async (topic, message) => {
     try {
         if (topic === 'message') {
-            const result = await messageCollection.insertOne(message);
-            console.log(`MongoDB Document Inserted with _id: ${result.insertedId}`);
+            await saveOnDb(message);
         }
         else {
            await search()
@@ -39,6 +38,7 @@ async function saveOnDb (message) {
         fecha: date_time,
         content: message.toString(),
     };
+    console.log(doc);
 }
 async function search() {
     const result = await messageCollection.findOne();
