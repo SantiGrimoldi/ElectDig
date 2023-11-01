@@ -21,15 +21,26 @@ mqttClient.on("connect", () => {
 
 mqttClient.on("message", async (topic, message) => {
     try {
-        const doc = {
-            fecha: date_time,
-            content: message.toString(),
-        };
+        if (topic === 'message') {
+            const result = await messageCollection.insertOne(message);
+            console.log(`MongoDB Document Inserted with _id: ${result.insertedId}`);
+        }
+        else {
+           await search()
 
-        const result = await messageCollection.insertOne(doc);
-
-        console.log(`MongoDB Document Inserted with _id: ${result.insertedId}`);
+        }
     } catch (err) {
         console.error(`Error: ${err}`);
     }
 });
+
+async function saveOnDb (message) {
+    const doc = {
+        fecha: date_time,
+        content: message.toString(),
+    };
+}
+async function search() {
+    const result = await messageCollection.findOne();
+    console.log(`MongoDB Document Inserted with _id: ${result.insertedId}`);
+}
