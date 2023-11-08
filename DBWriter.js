@@ -6,18 +6,26 @@ const client = new MongoClient(mongoUri);
 const database = client.db('elect_dig');
 const messageCollection = database.collection('vending_machine');
 
-async function write_database(topic, message){
+async function write_database(product, qty){
+    try {
+        await messageCollection.updateOne(
+            {title: product},
+            {$inc: {qty: parseInt(qty.toString())}}
+        )
+        return "Compra exitosa";
+    } catch (e) {
+        return e.message
+    }
+}
+
+async function buy_product(topic, message) {
     const product = splitPath(topic, -1)
     try {
         const before = await messageCollection.findOne(
             {title: product}
         )
         if (before.qty < 0) return "No hay stock";
-        await messageCollection.updateOne(
-            {title: product},
-            {$inc: {qty: parseInt(message.toString())}}
-        )
-        return "Compra exitosa";
+        return write_database(before.title, before.qty)
     } catch (e) {
         return e.message
     }
@@ -26,11 +34,10 @@ async function write_database(topic, message){
 async function repose_product(topic, message) {
     const product = splitPath(topic, -1)
     try {
-        await messageCollection.updateOne(
-            {title: product},
-            {$inc: {qty: parseInt(message.toString())}}
+        const before = await messageCollection.findOne(
+            {title: product}
         )
-        return "Reposicion exitosa";
+        return write_database(before.title, before.qty)
     } catch (e) {
         return e.message
     }
@@ -83,5 +90,6 @@ module.exports = {
     write_database,
     read_product,
     read_all_products,
-    repose_product
+    repose_product,
+    buy_product
 }
