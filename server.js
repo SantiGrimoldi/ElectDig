@@ -26,19 +26,19 @@ mqttClient.on("message", async (topic, message) => {
         const action = splitPath(topic, 2)
         switch (action) {
             case "get" : {
-                await mqttClient.publish("random", JSON.stringify(await read_product(topic)));
+                await mqttClient.publish("AustralFI/inel15/receive/get", JSON.stringify(await read_product(topic)));
                 break
             }
             case "buy" : {
-                await mqttClient.publish("random", JSON.stringify(await write_database(topic, message)));
+                await mqttClient.publish("AustralFI/inel15/receive/buy", JSON.stringify(await write_database(topic, message)));
                 break
             }
             case "add" : {
-                await  mqttClient.publish("random", JSON.stringify(await add_product(topic, message)));
+                await  mqttClient.publish("AustralFI/inel15/receive/add", JSON.stringify(await add_product(topic, message)));
                 break
             }
             case "getAll" : {
-                await mqttClient.publish("random", JSON.stringify(await read_all_products()));
+                await mqttClient.publish("AustralFI/inel15/receive/getAll", JSON.stringify(await read_all_products()));
                 break
             }
             default : {
