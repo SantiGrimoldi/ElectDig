@@ -13,7 +13,7 @@ async function write_database(topic, message){
             {title: product},
             {$inc: {qty: parseInt(message.toString())}}
         )
-        if (beforeBuying.value.qty >= 0) return "Compra exitosa";
+        if (beforeBuying.qty >= 0) return "Compra exitosa";
         return "No hay stock";
     } catch (e) {
         return e.message
