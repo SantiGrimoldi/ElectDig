@@ -12,7 +12,7 @@ async function write_database(product, qty){
             {title: product},
             {$inc: {qty: parseInt(qty.toString())}}
         )
-        return "Compra exitosa";
+        return "Transaccion exitosa";
     } catch (e) {
         return e.message
     }
@@ -25,7 +25,7 @@ async function buy_product(topic, message) {
             {title: product}
         )
         if (before.qty < 0) return "No hay stock";
-        return write_database(before.title, before.qty)
+        return write_database(before.title, message)
     } catch (e) {
         return e.message
     }
@@ -37,7 +37,7 @@ async function repose_product(topic, message) {
         const before = await messageCollection.findOne(
             {title: product}
         )
-        return write_database(before.title, before.qty)
+        return write_database(before.title, message)
     } catch (e) {
         return e.message
     }
