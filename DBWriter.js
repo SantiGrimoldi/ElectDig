@@ -90,6 +90,7 @@ async function add_history(product, old_qty, update_number) {
 
 async function read_history(topic) {
     const product = splitPath(topic, -1)
+    console.log(product)
     try {
         return await historyCollection.find({
             filter: {title: product}
