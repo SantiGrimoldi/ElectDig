@@ -9,12 +9,15 @@ const messageCollection = database.collection('vending_machine');
 async function write_database(topic, message){
     const product = splitPath(topic, -1)
     try {
-        const beforeBuying = await messageCollection.findOneAndUpdate(
+        const before = await messageCollection.findOne(
+            {title: product}
+        )
+        if (before.qty < 0) return "No hay stock";
+        await messageCollection.updateOne(
             {title: product},
             {$inc: {qty: parseInt(message.toString())}}
         )
-        if (beforeBuying.qty >= 0) return "Compra exitosa";
-        return "No hay stock";
+        return "Compra exitosa";
     } catch (e) {
         return e.message
     }
