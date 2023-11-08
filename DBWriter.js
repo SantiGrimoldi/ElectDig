@@ -27,7 +27,7 @@ async function buy_product(topic, message) {
             {title: product}
         )
         if (before.qty < 0) return "No hay stock";
-        return write_database(before.title, before.qty, message)
+        return write_database(before.title, before.qty, parseInt(message))
     } catch (e) {
         return e.message
     }
@@ -39,7 +39,7 @@ async function repose_product(topic, message) {
         const before = await messageCollection.findOne(
             {title: product}
         )
-        return write_database(before.title, before.qty, message)
+        return write_database(before.title, before.qty, parseInt(message))
     } catch (e) {
         return e.message
     }
@@ -86,7 +86,15 @@ async function add_history(product, old_qty, update_number) {
     } catch (e) {
         return e
     }
+}
 
+async function read_history(topic) {
+    const product = splitPath(topic, -1)
+    try {
+        return await historyCollection.find().toArray()
+    } catch (e) {
+        return e
+    }
 }
 
 async function read_all_products() {
