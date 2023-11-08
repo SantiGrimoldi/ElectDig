@@ -91,7 +91,9 @@ async function add_history(product, old_qty, update_number) {
 async function read_history(topic) {
     const product = splitPath(topic, -1)
     try {
-        return await historyCollection.find().toArray()
+        return await historyCollection.findOne({
+            filter: {title: product}
+        })
     } catch (e) {
         return e
     }
@@ -119,5 +121,6 @@ module.exports = {
     read_product,
     read_all_products,
     repose_product,
-    buy_product
+    buy_product,
+    read_history
 }
