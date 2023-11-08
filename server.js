@@ -2,7 +2,7 @@ const mqtt = require("mqtt");
 const { MongoClient } = require("mongodb");
 const config = require("./config");
 const {splitPath} = require("./PathManager");
-const {write_database, add_product, read_all_products, read_product} = require("./DBWriter");
+const {write_database, add_product, read_all_products, read_product, repose_product} = require("./DBWriter");
 
 const mqttUri = `mqtt://${config.mqtt.hostname}:${config.mqtt.port}`;
 const mqttClient = mqtt.connect(mqttUri);
@@ -31,6 +31,10 @@ mqttClient.on("message", async (topic, message) => {
             }
             case "buy" : {
                 await mqttClient.publish("AustralFI/inel15/receive/buy", JSON.stringify(await write_database(topic, message)));
+                break
+            }
+            case "repose" : {
+                await mqttClient.publish("AustralFI/inel15/receive/repose", JSON.stringify(await repose_product(topic, message)));
                 break
             }
             case "add" : {

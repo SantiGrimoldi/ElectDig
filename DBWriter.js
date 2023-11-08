@@ -23,6 +23,19 @@ async function write_database(topic, message){
     }
 }
 
+async function repose_product(topic, message) {
+    const product = splitPath(topic, -1)
+    try {
+        await messageCollection.updateOne(
+            {title: product},
+            {$inc: {qty: parseInt(message.toString())}}
+        )
+        return "Reposicion exitosa";
+    } catch (e) {
+        return e.message
+    }
+}
+
 async function add_product(topic, message) {
     const product = message.toString().split(",");
     try {
@@ -69,5 +82,6 @@ module.exports = {
     add_product,
     write_database,
     read_product,
-    read_all_products
+    read_all_products,
+    repose_product
 }
