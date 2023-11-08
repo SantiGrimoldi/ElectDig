@@ -8,43 +8,58 @@ const messageCollection = database.collection('vending_machine');
 
 async function write_database(topic, message){
     const product = splitPath(topic, -1)
-    console.log(product)
-    console.log(message.toString())
-    await messageCollection.findOneAndUpdate(
-        {title: product},
-        {$inc: {qty: parseInt(message.toString())}}
-    )
-    console.log("Compra exitosa")
+    try {
+        const beforeBuying = await messageCollection.findOneAndUpdate(
+            {title: product},
+            {$inc: {qty: parseInt(message.toString())}}
+        )
+        if (beforeBuying.value.qty >= 0) return "Compra exitosa";
+        return "No hay stock";
+    } catch (e) {
+        return e.message
+    }
 }
 
 async function add_product(topic, message) {
     const product = message.toString().split(",");
-    await messageCollection.insertOne(
-        {
-            title : product[0],
-            qty : parseInt(product[1])
-        }
-    )
-    console.log("Agregado con exito!")
+    try {
+        await messageCollection.insertOne(
+            {
+                title: product[0],
+                qty: parseInt(product[1])
+            }
+        )
+        return "Producto agregado"
+    } catch (e) {
+        return e
+    }
 }
 
 async function read_product(topic) {
     const product = splitPath(topic, -1)
-    return await messageCollection.findOne(
-        {title: product}
-    );
+    try {
+        return await messageCollection.findOne(
+            {title: product}
+        );
+    } catch (e) {
+        return e
+    }
 }
 
 async function read_all_products() {
     const result = await messageCollection.find().toArray()
-    const quantities = []
-    result.forEach(element => {
-        quantities.push({
-            title: element.title,
-            qty: element.qty
-        })
-    });
-    return quantities;
+    try {
+        const quantities = []
+        result.forEach(element => {
+            quantities.push({
+                title: element.title,
+                qty: element.qty
+            })
+        });
+        return quantities
+    } catch (e) {
+        return e
+    }
 }
 
 module.exports = {
