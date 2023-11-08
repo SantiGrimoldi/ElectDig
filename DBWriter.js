@@ -30,10 +30,9 @@ async function add_product(topic, message) {
 
 async function read_product(topic) {
     const product = splitPath(topic, -1)
-    const result = await messageCollection.findOne(
+    return await messageCollection.findOne(
         {title: product}
-    )
-    console.log(result)
+    );
 }
 
 async function read_all_products() {
