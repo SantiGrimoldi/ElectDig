@@ -4,10 +4,10 @@ struct document {
 }
 
 paths ->  AustralFi/inel15
-    /get
-    /add
-    /buy
-
+    /get/<title>
+    /add -> "title,qty"
+    /buy/<title> -> "qty"
+    /getAll
 
 
 test> use elect_dig
