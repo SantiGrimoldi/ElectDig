@@ -39,7 +39,12 @@ async function repose_product(topic, message) {
         const before = await messageCollection.findOne(
             {title: product}
         )
-        return write_database(before.title, before.qty, parseInt(message))
+        try {
+            await write_database(before.title, before.qty, parseInt(message))
+        } catch (e) {
+            console.log(e.message)
+        }
+        return "Reposicion existosa"
     } catch (e) {
         return e.message
     }
