@@ -26,7 +26,7 @@ async function buy_product(topic, message) {
         const before = await messageCollection.findOne(
             {title: product}
         )
-        if (before.qty < 0) return "No hay stock";
+        if (before.qty <= 0) return "No hay stock";
         return write_database(before.title, before.qty, parseInt(message))
     } catch (e) {
         return e.message
@@ -90,7 +90,6 @@ async function add_history(product, old_qty, update_number) {
 
 async function read_history(topic) {
     const product = splitPath(topic, -1)
-    console.log(product)
     try {
         return await historyCollection.find({
             filter: {title: product}
