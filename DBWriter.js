@@ -92,7 +92,7 @@ async function read_history(topic) {
     const product = splitPath(topic, -1)
     console.log(product)
     try {
-        return await historyCollection.findOne({title: product});
+        return await historyCollection.find({title: product}).toArray();
     } catch (e) {
         return e
     }
