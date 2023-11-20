@@ -10,3 +10,5 @@ class ResponseObject {
     }
 
 }
+
+module.exports = ResponseObject;
