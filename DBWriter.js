@@ -77,6 +77,7 @@ async function read_product(topic) {
 }
 
 async function add_history(product, old_qty, update_number) {
+    if (old_qty == null) {old_qty = 0}
     const date_time = new Date();
     try {
         await historyCollection.insertOne(
