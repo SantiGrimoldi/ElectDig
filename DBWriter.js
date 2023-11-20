@@ -14,7 +14,8 @@ async function write_database(product, old_qty, update_qty){
             {$inc: {qty: parseInt(update_qty.toString())}}
         )
         await add_history(product, old_qty, update_qty)
-        return "Transaccion exitosa";
+        const response = "Transaccion exitosa"
+        return response;
     } catch (e) {
         return e.message
     }
