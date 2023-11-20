@@ -77,13 +77,14 @@ async function read_product(topic) {
 }
 
 async function add_history(product, old_qty, update_number) {
-    if (old_qty == null) {old_qty = 0}
+    let oc = 0
+    if (old_qty) {oc = old_qty}
     const date_time = new Date();
     try {
         await historyCollection.insertOne(
             {
                 title: product,
-                old_qty: old_qty,
+                old_qty: oc,
                 update_qty: update_number,
                 date: date_time
             }
