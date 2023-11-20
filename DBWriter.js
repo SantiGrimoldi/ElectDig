@@ -14,8 +14,7 @@ async function write_database(product, old_qty, update_qty){
             {$inc: {qty: parseInt(update_qty.toString())}}
         )
         await add_history(product, old_qty, update_qty)
-        const response = "Transaccion exitosa"
-        return response;
+        return ResponseObject("Transaccion exitosa");
     } catch (e) {
         return e.message
     }
@@ -27,7 +26,7 @@ async function buy_product(topic, message) {
         const before = await messageCollection.findOne(
             {title: product}
         )
-        if (before.qty <= 0) return "No hay stock";
+        if (before.qty <= 0) return ResponseObject("No hay stock");
         return write_database(before.title, before.qty, parseInt(message))
     } catch (e) {
         return e.message
@@ -45,7 +44,7 @@ async function repose_product(topic, message) {
         } catch (e) {
             console.log(e.message)
         }
-        return "Reposicion existosa"
+        return ResponseObject("Reposicion existosa")
     } catch (e) {
         return e.message
     }
