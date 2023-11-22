@@ -1,55 +1,132 @@
-
+const ResponseObject = require('./ResponseObject');
 const {MongoClient} = require("mongodb");
 const {splitPath} = require("./PathManager");
 const mongoUri = 'mongodb://127.0.0.1:27017';
 const client = new MongoClient(mongoUri);
 const database = client.db('elect_dig');
 const messageCollection = database.collection('vending_machine');
+const historyCollection = database.collection('history');
 
-async function write_database(topic, message){
+async function write_database(product, old_qty, update_qty){
+    try {
+        await messageCollection.updateOne(
+            {title: product},
+            {$inc: {qty: parseInt(update_qty.toString())}}
+        )
+        await add_history(product, old_qty, update_qty)
+        return new ResponseObject("Transaccion exitosa");
+    } catch (e) {
+        return e.message
+    }
+}
+
+async function buy_product(topic, message) {
     const product = splitPath(topic, -1)
-    console.log(product)
-    console.log(message.toString())
-    await messageCollection.findOneAndUpdate(
-        {title: product},
-        {$inc: {qty: parseInt(message.toString())}}
-    )
-    console.log("Compra exitosa")
+    try {
+        const before = await messageCollection.findOne(
+            {title: product}
+        )
+        if (before.qty <= 0) return new ResponseObject("No hay stock");
+        return write_database(before.title, before.qty, parseInt(message))
+    } catch (e) {
+        return e.message
+    }
+}
+
+async function repose_product(topic, message) {
+    const product = splitPath(topic, -1)
+    try {
+        const before = await messageCollection.findOne(
+            {title: product}
+        )
+        try {
+            await write_database(before.title, before.qty, parseInt(message))
+        } catch (e) {
+            console.log(e.message)
+        }
+        return new ResponseObject("Reposicion existosa")
+    } catch (e) {
+        return e.message
+    }
 }
 
 async function add_product(topic, message) {
     const product = message.toString().split(",");
-    await messageCollection.insertOne(
-        {
-            title : product[0],
-            qty : parseInt(product[1])
-        }
-    )
-    console.log("Agregado con exito!")
+    try {
+        await messageCollection.insertOne(
+            {
+                title: product[0],
+                qty: parseInt(product[1])
+            }
+        )
+        return "Producto agregado"
+    } catch (e) {
+        return e
+    }
 }
 
 async function read_product(topic) {
     const product = splitPath(topic, -1)
-    return await messageCollection.findOne(
-        {title: product}
-    );
+    try {
+        return await messageCollection.findOne(
+            {title: product}
+        );
+    } catch (e) {
+        return e
+    }
+}
+
+async function add_history(product, old_qty, update_number) {
+    let oc = 0
+    if (old_qty) {oc = old_qty}
+    const date_time = new Date();
+    try {
+        await historyCollection.insertOne(
+            {
+                title: product,
+                old_qty: oc,
+                update_qty: update_number,
+                date: date_time
+            }
+        )
+        return "Historial agregado"
+    } catch (e) {
+        return e
+    }
+}
+
+async function read_history(topic) {
+    const product = splitPath(topic, -1)
+    console.log(product)
+    try {
+        return await historyCollection.find({title: product}).toArray();
+    } catch (e) {
+        return e
+    }
 }
 
 async function read_all_products() {
     const result = await messageCollection.find().toArray()
-    const quantities = []
-    result.forEach(element => {
-        quantities.push({
-            title: element.title,
-            qty: element.qty
-        })
-    });
-    return quantities;
+    try {
+        const quantities = []
+        result.forEach(element => {
+            quantities.push({
+                title: element.title,
+                qty: element.qty
+            })
+        });
+        return quantities
+    } catch (e) {
+        return e
+    }
 }
 
 module.exports = {
     add_product,
     write_database,
     read_product,
-    read_all_products
+    read_all_products,
+    repose_product,
+    buy_product,
+    read_history
 }

@@ -2,7 +2,7 @@ const mqtt = require("mqtt");
 const { MongoClient } = require("mongodb");
 const config = require("./config");
 const {splitPath} = require("./PathManager");
-const {write_database, add_product, read_all_products} = require("./DBWriter");
+const {write_database, add_product, read_all_products, read_product, repose_product, buy_product, read_history} = require("./DBWriter");
 
 const mqttUri = `mqtt://${config.mqtt.hostname}:${config.mqtt.port}`;
 const mqttClient = mqtt.connect(mqttUri);
@@ -26,19 +26,27 @@ mqttClient.on("message", async (topic, message) => {
         const action = splitPath(topic, 2)
         switch (action) {
             case "get" : {
-                // TODO
+                await mqttClient.publish("AustralFI/inel15/receive/get", JSON.stringify(await read_product(topic)));
                 break
             }
             case "buy" : {
-                await write_database(topic, message)
+                await mqttClient.publish("AustralFI/inel15/receive/buy", JSON.stringify(await buy_product(topic, message)));
+                break
+            }
+            case "repose" : {
+                await mqttClient.publish("AustralFI/inel15/receive/repose", JSON.stringify(await repose_product(topic, message)));
                 break
             }
             case "add" : {
-                await  add_product(topic, message)
+                await  mqttClient.publish("AustralFI/inel15/receive/add", JSON.stringify(await add_product(topic, message)));
                 break
             }
             case "getAll" : {
-                await read_all_products();
+                await mqttClient.publish("AustralFI/inel15/receive/getAll", JSON.stringify(await read_all_products()));
+                break
+            }
+            case "getHistory" : {
+                await mqttClient.publish("AustralFI/inel15/receive/getHistory", JSON.stringify(await read_history(topic)));
                 break
             }
             default : {

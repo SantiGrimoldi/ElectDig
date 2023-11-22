@@ -3,11 +3,14 @@ struct document {
     qty : Int (cantidad)
 }
 
-paths ->  AustralFi/inel15
+paths ->  AustralFI/inel15
     /get/<title>
     /add -> "title,qty"
     /buy/<title> -> "qty"
     /getAll
+    /receive
+            /buy
+            /getAll
 
 
 test> use elect_dig
